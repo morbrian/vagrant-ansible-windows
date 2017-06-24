@@ -1,12 +1,45 @@
+# Provision Windows 10 systems with Linux Ansible Controller
 
 Ansible controller on CENTOS-7 with ability to control Windows via windows remoting and kerberos authentication.
 
-Once the packages are installed (performed by provisioning in Vagrantfile), configure system for your Windows environment.
+# Windows Client Requirements
+
+The Windows client must be prepared to support powershell scripts to run remotely.
+
+1. Clone the ansible repository to the Windows client:
+
+        git clone https://github.com/ansible/ansible
+
+2. Open PowerShell
+
+3. Start a new shell from the powershell console as admin
+
+        Start-Process powershell -Verb runAs
+
+4. In new admin powershell console update the execution policy to allow the configuration script to run.
+
+5. Run the configuration script from the admin console
+
+        cd ansible/examples/scripts
+        ./ConfigureRemotingForAnsible.ps1
+
+
+# Linux Requirements
+
+Testing was performed with:
+CENTOS 7, Ansible 2.3, Python 2.7
+
+It is presumably possible to provision CENTOS 6 with an updated of Python and Ansible, however CENTOS 7 is recommended as it is far easier to prepare.
+
+The Vagrantfile will automatically create a CENTOS 7 VM with the required Python, pip, Ansible versions installed and configured.
+
+The following extra step must be performed to configure the Linux system for your Windoww domain.
 
 Edit the /etc/krb5.conf file on the vm with updates to the following sections:
 
+        # If unsure of windows domain values, use the command `klist.exe` on your windows to reveal the correct domain controller values.
         [realms]
-        FORWARDSLOPE.LOCAL = {
+        DOMAIN-CONTROLLER = {
           kdc = DOMAIN-CONTROLLER
           kdc = DOMAIN-CONTROLLER.DOMAIN.COM
         }
@@ -14,17 +47,14 @@ Edit the /etc/krb5.conf file on the vm with updates to the following sections:
         [domain_realm]
         DOMAIN.COM = DOMAIN.COM
 
-If unsure of appropriate values, then usng the command `klist.exe` on your windows system will reveal the correct domain controller values.
 
-Once krb5.conf is updated, the following commands can test authentication with the domain controller.
+Once krb5.conf is updated, run the following commands to test authentication with the domain controller.
 
 On the linux vm run:
 
-1. `kinit username@DOMAIN.COM` will request a kerberos ticket, and success is indicated by no output after password is entered.
+1. `kinit` username@DOMAIN.COM` will request a kerberos ticket, and success is indicated by no output after password is entered.
 
-    1. If the username is not already known, the `klist.exe` command can help identify a correct username.
-
-2. `klist` will display a list of active tickets, the only item will be the ticket requested above on the first time configuring the system.
+2. `klist` will display a list of active tickets
 
 
 References:
