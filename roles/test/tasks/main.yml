@@ -1,0 +1,42 @@
+---
+# This playbook uses the win_get_url module to download a simple HTML file for IIS
+
+- name: Create tmp work area on remote
+  win_file:
+    path: c:/tmp
+    state: directory
+
+- name: Check for {{ staging_folder }}/java/{{ win_jdk_archive_file }} on local
+  local_action: stat path={{ staging_folder }}/java/{{ win_jdk_archive_file }}
+  become: no
+  register: win_jdk_archive_local_src
+
+- name: Copy {{ staging_folder }}/java/{{ win_jdk_archive_file }} if available
+  win_copy:
+    src: "{{ staging_folder }}/java/{{ win_jdk_archive_file }}"
+    dest: C:/tmp/{{ win_jdk_archive_file }}
+  when: win_jdk_archive_local_src.stat.exists == True
+
+
+- name: Download oracle jdk archive
+  win_get_url:
+    url:     "{{ win_jdk_download_url }}"
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    dest:    "/tmp/{{ win_jdk_archive_file }}"
+  when: win_jdk_archive_local_src.stat.exists == False
+
+- name: Announce installation complete
+  win_say:
+    msg: "Ansible installation of Java completed"
+
+#- name: Extract oracle-jdk archive
+#  unarchive:
+#    src: /tmp/{{jdk_archive_file}}
+#    dest: /opt
+#    remote_src: yes
+
+
+
+
+
+

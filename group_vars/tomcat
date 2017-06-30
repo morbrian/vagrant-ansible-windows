@@ -1,0 +1,28 @@
+staging_folder: ../staging
+
+jdk_download_url: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+win_jdk_archive_file: mockup-java.txt
+jdk_archive_file: jdk-8u131-linux-x64.tar.gz
+jdk_extract_dir: jdk1.8.0_131
+
+tomcat_version: 8.0.43
+
+http_port: 8080
+https_port: 8443
+ajp_port: 8009
+
+ipv6_disable: True
+
+jmx_registry_port: 10080
+jmx_server_port: 10081
+
+admin_username: admin
+admin_password: admin
+
+min_heap_size: 512M
+max_heap_size: 512M
+metaspace_size: 128M
+max_metaspace_size: 128M
+
+gc_log_file: /opt/tomcat/logs/gc.log
+heap_dump_dir: /opt/tomcat/logs/

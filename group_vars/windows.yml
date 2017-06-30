@@ -1,0 +1,19 @@
+# it is suggested that these be encrypted with ansible-vault:
+# ansible-vault edit group_vars/windows.yml
+
+ansible_user: bmoriarty@MYDOMAIN.LOCAL
+ansible_password: mypassword
+ansible_port: 5986
+ansible_connection: winrm
+
+# The following is necessary for Python 2.7.9+ (or any older Python that has backported SSLContext, eg, Python 2.7.5 on RHEL7) when using default WinRM self-signed certificates:
+ansible_winrm_server_cert_validation: ignore
+
+#
+# application specific
+# 
+staging_folder: ../staging
+
+win_jdk_download_url: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-windows-x64.exe
+win_jdk_archive_file: jdk-8u131-windows-x64.exe
+

@@ -70,3 +70,32 @@ References:
 
 * Ansible Windows: http://docs.ansible.com/ansible/intro_windows.html
 
+# Additional Windows and Linux config tips
+
+1. Server not found in Kerberos database
+
+If you use the IP address in your ansible inventory file this message is the result.
+Instead...
+use the hostname (not ip address) in the ansible inventory file.
+If windows hostname not in DNS, Edit hosts file, map the hostname of the target windows VM to it's IP Address
+
+2. Configuration file does not specify default realm
+
+The /etc/krb5.conf file should specify default_realm under libdefaults section, for example:
+	[libdefaults]
+	 dns_lookup_realm = false
+	 ticket_lifetime = 24h
+	 renew_lifetime = 7d
+	 forwardable = true
+	 rdns = false
+	 default_realm = MYDOMAIN.LOCAL
+	 default_ccache_name = KEYRING:persistent:%{uid}
+
+
+3. username in windows.yml group_vars must be full username@domain
+example: bmoriarty@MYDOMAIN.LOCAL
+
+4. Simple test command:
+
+        ansible -i hosts windows -m win_ping -vvvvv
+
